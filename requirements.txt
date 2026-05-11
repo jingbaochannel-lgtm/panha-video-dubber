@@ -1,0 +1,5 @@
+PyQt6>=6.6
+PyQt6-Qt6>=6.6
+openai-whisper>=20231117
+yt-dlp>=2024.4.9
+pysrt>=1.1.2
