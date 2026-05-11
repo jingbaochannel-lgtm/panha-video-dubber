@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "panha-video-dubber"
+version = "0.1.0"
+description = "Panha Video Dubber 2026 — PyQt6 desktop app for AI-powered video dubbing."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "jingbaochannel" }]
+dependencies = [
+    "PyQt6>=6.6",
+    "PyQt6-Qt6>=6.6",
+    "pysrt>=1.1.2",
+]
+
+[project.optional-dependencies]
+ai = ["openai-whisper>=20231117"]
+downloader = ["yt-dlp>=2024.4.9"]
+dev = ["ruff>=0.5", "pytest>=8"]
+
+[project.scripts]
+panha-dubber = "panha_dubber.app:main"
+
+[tool.setuptools.packages.find]
+include = ["panha_dubber*"]
+
+[tool.ruff]
+line-length = 110
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W", "UP", "B"]
+ignore = ["E501"]
