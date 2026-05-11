@@ -25,7 +25,9 @@ def _parse_timestamp(s: str) -> int:
     m = _TIME_RE.search(s)
     if not m:
         raise ValueError(f"bad timestamp: {s!r}")
-    h, mi, se, ms = (int(x) for x in m.groups())
+    h, mi, se = (int(x) for x in m.groups()[:3])
+    # The ms group is a decimal fraction; pad on the right so `.5` -> 500 ms, not 5 ms.
+    ms = int(m.group(4).ljust(3, "0"))
     return ((h * 60 + mi) * 60 + se) * 1000 + ms
 
 

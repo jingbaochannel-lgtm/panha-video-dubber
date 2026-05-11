@@ -59,6 +59,9 @@ class _Job(QObject):
 
 
 class MainWindow(QMainWindow):
+    # Routed from background threads back onto the GUI thread for status updates.
+    _bg_status = pyqtSignal(str)
+
     def __init__(self) -> None:
         super().__init__()
         self.settings = Settings.load()
@@ -165,6 +168,9 @@ class MainWindow(QMainWindow):
         self.export_bar.export_video.connect(self.on_export_video)
         self.export_bar.cancel_export.connect(self._on_cancel_export)
         self.export_bar.capcut.connect(lambda: self._not_implemented("Open in CapCut"))
+
+        # Background-thread status messages must be marshalled onto the main thread.
+        self._bg_status.connect(self._set_status)
 
     # ----- handlers -----------------------------------------------------------
     def on_load_video(self) -> None:
@@ -352,14 +358,15 @@ class MainWindow(QMainWindow):
         ).start()
 
     def _download_url(self, url: str, out_dir: str) -> None:
+        # Runs on a worker thread — use the _bg_status signal to update the status bar safely.
         try:
             subprocess.run(
                 ["yt-dlp", "-o", os.path.join(out_dir, "%(title)s.%(ext)s"), url],
                 check=True,
             )
-            self._set_status(f"Download complete \u2192 {out_dir}")
+            self._bg_status.emit(f"Download complete \u2192 {out_dir}")
         except subprocess.CalledProcessError as exc:
-            self._set_status(f"Download failed: {exc}")
+            self._bg_status.emit(f"Download failed: {exc}")
 
     # ----- helpers ------------------------------------------------------------
     def _on_play_row(self, _row: int) -> None:

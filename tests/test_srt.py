@@ -37,6 +37,12 @@ def test_handles_dotted_milliseconds():
     assert cues == [SrtCue(index=1, start_ms=1250, end_ms=2000, text="foo")]
 
 
+def test_pads_short_millisecond_fields():
+    # `.5` is half a second (500 ms), not 5 ms; `.25` is 250 ms.
+    cues = parse_srt("1\n00:00:01.5 --> 00:00:02.25\nfoo\n")
+    assert cues == [SrtCue(index=1, start_ms=1500, end_ms=2250, text="foo")]
+
+
 def test_write_renumbers_indices():
     cues = [
         SrtCue(index=99, start_ms=0, end_ms=1000, text="a"),
