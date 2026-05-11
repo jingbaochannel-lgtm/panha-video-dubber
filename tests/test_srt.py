@@ -3,7 +3,6 @@ from __future__ import annotations
 
 from panha_dubber.services.srt import SrtCue, parse_srt, write_srt
 
-
 SAMPLE = """1
 00:00:01,000 --> 00:00:02,500
 Hello world
